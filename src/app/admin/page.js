@@ -13,6 +13,7 @@ export default function AdminPage() {
     name: '', description: '', price: '', image_url: '', category: 'clothes'
   });
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
 
   useEffect(() => {
@@ -48,6 +49,34 @@ export default function AdminPage() {
     });
     setEditingProduct(product);
     setShowForm(true);
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    const uploadData = new FormData();
+    uploadData.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: uploadData,
+      });
+      const result = await res.json();
+      
+      if (res.ok) {
+        setFormData({ ...formData, image_url: result.url });
+        showMessage('success', 'Image uploaded successfully!');
+      } else {
+        showMessage('error', `Upload failed: ${result.error}`);
+      }
+    } catch (error) {
+      showMessage('error', 'Error uploading image');
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -135,8 +164,23 @@ export default function AdminPage() {
               </div>
             </div>
             <div className="form-group">
-              <label>Image URL</label>
-              <input type="text" value={formData.image_url} onChange={(e) => setFormData({...formData, image_url: e.target.value})} placeholder="/products/image-name.png or https://..." />
+              <label>Image Upload</label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={handleImageUpload} 
+                  disabled={uploadingImage}
+                  style={{ padding: '8px', background: 'var(--color-bg-secondary)', cursor: 'pointer' }}
+                />
+                <input 
+                  type="text" 
+                  value={formData.image_url} 
+                  onChange={(e) => setFormData({...formData, image_url: e.target.value})} 
+                  placeholder="Or paste image URL here..." 
+                />
+              </div>
+              {uploadingImage && <div style={{ color: 'var(--color-gold)', fontSize: '0.8rem', marginTop: '4px' }}>Uploading image...</div>}
             </div>
             {formData.image_url && (
               <div className="form-image-preview">
