@@ -793,11 +793,20 @@ img {
   visibility: visible;
 }
 
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  z-index: 1002;
+}
+
 .cart-drawer {
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
+  height: 100vh;
+  height: 100dvh;
   width: 420px;
   max-width: 100vw;
   background: var(--color-bg-secondary);
