@@ -288,7 +288,7 @@ img {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding: var(--space-4xl) var(--space-xl);
+  padding: calc(72px + var(--space-2xl)) var(--space-xl) var(--space-4xl);
 }
 
 .hero-bg {
@@ -1649,7 +1649,7 @@ img {
   }
 
   .hero {
-    padding: var(--space-3xl) var(--space-md);
+    padding: calc(72px + var(--space-xl)) var(--space-md) var(--space-3xl);
   }
 
   .hero-categories {
@@ -1690,7 +1690,12 @@ img {
   }
 
   .navbar-brand {
-    font-size: 1rem;
+    font-size: 0.85rem;
+    gap: 4px;
+  }
+
+  .brand-icon {
+    font-size: 1.1rem;
   }
 
   .product-grid {
@@ -1698,7 +1703,7 @@ img {
   }
 
   .hero-title {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
   }
 
   .product-footer {
