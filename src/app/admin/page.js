@@ -15,6 +15,11 @@ export default function AdminPage() {
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
+  const [activeTab, setActiveTab] = useState('all');
+
+  const filteredProducts = activeTab === 'all' 
+    ? products 
+    : products.filter(p => p.category === activeTab);
 
   useEffect(() => {
     fetchProducts();
@@ -200,7 +205,13 @@ export default function AdminPage() {
       {loading ? (
         <div className="admin-loading">Loading products...</div>
       ) : (
-        <div className="admin-products-table">
+        <>
+          <div className="admin-filters">
+            <button className={`filter-tab ${activeTab === 'all' ? 'active' : ''}`} onClick={() => setActiveTab('all')}>All Products</button>
+            <button className={`filter-tab ${activeTab === 'clothes' ? 'active' : ''}`} onClick={() => setActiveTab('clothes')}>Clothes</button>
+            <button className={`filter-tab ${activeTab === 'jewellery' ? 'active' : ''}`} onClick={() => setActiveTab('jewellery')}>Jewellery</button>
+          </div>
+          <div className="admin-products-table">
           <table>
             <thead>
               <tr>
@@ -213,7 +224,7 @@ export default function AdminPage() {
               </tr>
             </thead>
             <tbody>
-              {products.map((product, index) => (
+              {filteredProducts.map((product, index) => (
                 <tr key={product.id}>
                   <td><span className="admin-product-number">#{String(index + 1).padStart(2, '0')}</span></td>
                   <td>
@@ -231,10 +242,12 @@ export default function AdminPage() {
                   <td>
                     <div className="admin-actions">
                       <button className="admin-edit-btn" onClick={() => handleEdit(product)} title="Edit">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        Edit
                       </button>
                       <button className="admin-delete-btn" onClick={() => handleDelete(product.id)} title="Delete">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        Delete
                       </button>
                     </div>
                   </td>
@@ -242,10 +255,11 @@ export default function AdminPage() {
               ))}
             </tbody>
           </table>
-          {products.length === 0 && (
-            <div className="admin-empty">No products yet. Click "Add Product" to get started!</div>
+          {filteredProducts.length === 0 && (
+            <div className="admin-empty">No products found in this category.</div>
           )}
         </div>
+        </>
       )}
     </div>
   );
