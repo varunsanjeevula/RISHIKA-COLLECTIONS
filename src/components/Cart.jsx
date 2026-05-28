@@ -1,11 +1,14 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useCart } from '@/context/CartContext';
 
 export default function Cart({ isOpen, onClose }) {
   const { cartItems, removeFromCart, updateQuantity, clearCart, getCartTotal } = useCart();
+  const [customerName, setCustomerName] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
+  const [checkoutError, setCheckoutError] = useState('');
 
   useEffect(() => {
     if (isOpen) {
@@ -19,7 +22,16 @@ export default function Cart({ isOpen, onClose }) {
   const handleCheckout = () => {
     if (cartItems.length === 0) return;
 
+    if (!customerName.trim() || !customerPhone.trim()) {
+      setCheckoutError('Please enter your name and mobile number.');
+      return;
+    }
+
     let message = '\ud83d\udecd\ufe0f *New Order - Rishika Collections*\n\n';
+    message += `*Customer Details:*\n`;
+    message += `Name: ${customerName.trim()}\n`;
+    message += `Mobile: ${customerPhone.trim()}\n\n`;
+    message += `*Order Details:*\n`;
     cartItems.forEach((item, index) => {
       const code = item.productCode || 'N/A';
       const imageUrl = item.image_url;
@@ -84,6 +96,23 @@ export default function Cart({ isOpen, onClose }) {
             </div>
 
             <div className="cart-footer">
+              <div className="cart-customer-details">
+                <input 
+                  type="text" 
+                  placeholder="Your Full Name" 
+                  value={customerName} 
+                  onChange={(e) => { setCustomerName(e.target.value); setCheckoutError(''); }}
+                  className="cart-input"
+                />
+                <input 
+                  type="tel" 
+                  placeholder="Your Mobile Number" 
+                  value={customerPhone} 
+                  onChange={(e) => { setCustomerPhone(e.target.value); setCheckoutError(''); }}
+                  className="cart-input"
+                />
+                {checkoutError && <div className="cart-error">{checkoutError}</div>}
+              </div>
               <div className="cart-total">
                 <span>Total</span>
                 <span className="cart-total-price">₹{getCartTotal().toLocaleString('en-IN')}</span>
